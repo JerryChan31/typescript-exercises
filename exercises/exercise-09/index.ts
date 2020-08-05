@@ -1,4 +1,7 @@
 import chalk from 'chalk';
+import { resolve } from 'dns';
+import { rejects } from 'assert';
+import { callbackify } from 'util';
 
 /*
 
@@ -71,8 +74,16 @@ type ApiResponse<T> = (
     }
 );
 
-function promisify(arg: unknown): unknown {
-    return null;
+function promisify<T>(oldFunc: (callback: (response: ApiResponse<T>) => void) => void): () => Promise<T>{
+    return () => new Promise((resolve, reject) => {
+        oldFunc((response) => {
+            if (response.status === 'success') {
+                resolve(response.data)
+            } else {
+                reject(response)
+            }
+        })
+    })
 }
 
 const oldApi = {

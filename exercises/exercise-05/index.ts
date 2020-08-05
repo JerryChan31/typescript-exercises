@@ -64,7 +64,9 @@ function logPerson(person: Person) {
     );
 }
 
-function filterPersons(persons: Person[], personType: string, criteria: unknown): unknown[] {
+function filterPersons(persons: Person[], personType: string, criteria: Partial<Admin>): Admin[];
+function filterPersons(persons: Person[], personType: string, criteria: Partial<User>): User[];
+function filterPersons(persons: Person[], personType: string, criteria: any): any {
     return persons
         .filter((person) => person.type === personType)
         .filter((person) => {
@@ -75,7 +77,7 @@ function filterPersons(persons: Person[], personType: string, criteria: unknown)
         });
 }
 
-let usersOfAge23: User[] = filterPersons(persons, 'user', { age: 23 });
+let usersOfAge23: User[] = filterPersons(persons, 'user', ({ age: 23 } as Partial<User>));
 let adminsOfAge23: Admin[] = filterPersons(persons, 'admin', { age: 23 });
 
 console.log(chalk.yellow('Users of age 23:'));
